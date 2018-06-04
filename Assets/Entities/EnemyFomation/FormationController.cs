@@ -8,6 +8,7 @@ public class FormationController : MonoBehaviour {
     public float height = 4f;
     private bool movingRight = true;
     public float speed = 3f;
+    public float spawnDelay = 0.5f;
 
     private float xmax;
     private float xmin;
@@ -21,7 +22,7 @@ public class FormationController : MonoBehaviour {
         xmax = rightmost.x;
         xmin = leftmost.x;
 
-        Respawn();
+        SpawnUntilFull();
     }
 
     void Respawn(){
@@ -29,6 +30,18 @@ public class FormationController : MonoBehaviour {
         {
             GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity);
             enemy.transform.parent = child;
+        }
+    }
+
+    void SpawnUntilFull(){
+        Transform freePosition = NextFreePosition();
+        if (freePosition)
+        {
+            GameObject enemy = Instantiate(enemyPrefab, freePosition.transform.position, Quaternion.identity);
+            enemy.transform.parent = freePosition;
+        }
+        if (NextFreePosition()){
+            Invoke("SpawnUntilFull", spawnDelay);
         }
     }
 
@@ -61,8 +74,19 @@ public class FormationController : MonoBehaviour {
         }
 
         if (AllMembersDead()){
-            Respawn();
+            SpawnUntilFull();
         }
+    }
+
+    Transform NextFreePosition(){
+        foreach (Transform childPositionGameObject in transform)
+        {
+            if (childPositionGameObject.childCount == 0)
+            {
+                return childPositionGameObject;
+            }
+        }
+        return null;
     }
 
     bool AllMembersDead(){
