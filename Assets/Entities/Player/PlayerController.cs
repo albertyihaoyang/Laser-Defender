@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour {
     public float speed = 10.0f;
     public float padding = 0.5f;
     public GameObject projectile;
-    public float projectileSpeed = 3.0f;
+    public float projectileSpeed = 8.0f;
     public float firingRate = 0.2f;
 
     public float health = 250;
